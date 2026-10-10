@@ -1,0 +1,58 @@
+# Java and Maven build output
+/target/
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse / Spring Tool Suite
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.springBeans
+.sts4-cache/
+
+# VS Code workspace settings
+.vscode/
+
+# Local H2 database files (including lock and trace files)
+/data/
+*.mv.db
+*.lock.db
+*.trace.db
+*.h2.db
+
+# Logs and JVM crash / heap dumps
+*.log
+/logs/
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# Local environment and private application configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+/src/main/resources/application-local.properties
+/src/main/resources/application-local.yml
+/src/main/resources/application-local.yaml
+
+# Operating system and temporary editor files
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+*~
+*.swp
+*.swo
+*.bak
+
+# Keep Maven Wrapper files in Git, including the JAR if added later.
+!.mvn/wrapper/maven-wrapper.jar

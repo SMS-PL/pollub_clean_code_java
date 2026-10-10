@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wiadomość</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #f5f6f8; color: #202630; }
+        main { max-width: 480px; margin: 64px auto; padding: 32px; background: white; border-radius: 12px; }
+        h1 { margin-top: 0; font-size: 24px; }
+        label { display: block; margin-bottom: 8px; }
+        input { box-sizing: border-box; width: 100%; padding: 12px; font: inherit; border: 1px solid #a8b0bb; border-radius: 6px; }
+        button { margin-top: 16px; padding: 12px 24px; font: inherit; border: 0; border-radius: 6px; background: #2458ce; color: white; cursor: pointer; }
+        input:focus-visible, button:focus-visible { outline: 3px solid #89b4ff; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Wiadomość</h1>
+    <form method="post" th:action="@{/messages}" th:object="${messageRequest}">
+        <label for="message">Treść wiadomości</label>
+        <input type="text" th:field="*{message}" autocomplete="off">
+        <button type="submit">Wyślij</button>
+    </form>
+</main>
+</body>
+</html>
