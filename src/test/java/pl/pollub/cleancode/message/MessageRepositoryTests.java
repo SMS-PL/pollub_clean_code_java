@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import pl.pollub.cleancode.message.entity.Message;
-import pl.pollub.cleancode.message.repository.MessageRepository;
+import pl.pollub.cleancode.domain.message.entity.Message;
+import pl.pollub.cleancode.domain.message.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
