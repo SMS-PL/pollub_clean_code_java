@@ -29,6 +29,12 @@ public class MessageService {
         );
     }
 
+    public List<MessageType> getSupportedTypes() {
+        return java.util.Arrays.stream(MessageType.values())
+                .filter(messageStrategyMap::containsKey)
+                .toList();
+    }
+
     public void saveMessage(MessageRequestDto request) {
         MessageStrategy messageStrategy = messageStrategyMap.get(request.getType());
         if(messageStrategy == null){

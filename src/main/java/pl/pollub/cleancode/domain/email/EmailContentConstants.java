@@ -6,10 +6,7 @@ import lombok.experimental.UtilityClass;
 public class EmailContentConstants {
 
     public static final String PAYMENT_ISSUE_CONTENT= """
-            Dear Customer,
-           
-            We have encountered an issue with your recent payment. Please contact our support team for assistance.
-            
+            Dear Paymment Department,We have encountered an issue with your recent payment. Please contact our support team for assistance.
             Best regards,
             Payment Department
             """;

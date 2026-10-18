@@ -2,7 +2,6 @@ package pl.pollub.cleancode.infrastructure.cron;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.UtilityClass;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.pollub.cleancode.domain.email.EmailService;
@@ -39,6 +38,8 @@ public class CronScheduler {
                             "Scheduled Email",
                             cronEntity.getContent()
                     );
+                    cronEntity.setStatus(CronStatus.SENT);
+                    cronRepository.save(cronEntity);
                     break;
                 default:
                     break;

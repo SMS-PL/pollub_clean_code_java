@@ -3,25 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wiadomość</title>
+    <title>Wiadomości i zadania</title>
     <style>
+        * { box-sizing: border-box; }
         body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #f5f6f8; color: #202630; }
-        main { max-width: 480px; margin: 64px auto; padding: 32px; background: white; border-radius: 12px; }
-        h1 { margin-top: 0; font-size: 24px; }
-        label { display: block; margin-bottom: 8px; }
-        input { box-sizing: border-box; width: 100%; padding: 12px; font: inherit; border: 1px solid #a8b0bb; border-radius: 6px; }
-        button { margin-top: 16px; padding: 12px 24px; font: inherit; border: 0; border-radius: 6px; background: #2458ce; color: white; cursor: pointer; }
-        input:focus-visible, button:focus-visible { outline: 3px solid #89b4ff; outline-offset: 2px; }
+        main { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; align-items: start; }
+        section { min-width: 0; padding: 28px; background: white; border-radius: 12px; }
+        h1, h2 { margin: 0 0 24px; font-size: 24px; }
+        label { display: block; margin: 20px 0 8px; }
+        input, select { width: 100%; padding: 12px; font: inherit; border: 1px solid #a8b0bb; border-radius: 6px; background: white; }
+        button, .refresh { display: inline-block; padding: 12px 24px; font: inherit; border: 0; border-radius: 6px; background: #2458ce; color: white; cursor: pointer; text-decoration: none; }
+        button { margin-top: 20px; }
+        button:disabled { opacity: .5; cursor: not-allowed; }
+        :focus-visible { outline: 3px solid #89b4ff; outline-offset: 2px; }
+        .heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+        .heading h2 { margin: 0; }
+        .refresh { padding: 8px 12px; background: #edf2ff; color: #2458ce; }
+        .hint, .empty { color: #606b7a; line-height: 1.6; }
+        .hint { font-size: 14px; }
+        .tasks { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+        .task { border: 1px solid #dce1e8; border-radius: 8px; padding: 16px; overflow-wrap: anywhere; }
+        .task header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+        .status { padding: 4px 10px; border-radius: 20px; font-size: 13px; background: #fff3cf; color: #725300; }
+        .status.SENT { background: #def5e5; color: #216738; }
+        .status.ERROR { background: #ffe3e3; color: #9a2626; }
+        .recipient { color: #606b7a; font-size: 14px; }
+        .content { margin-bottom: 0; white-space: pre-wrap; }
+        @media (max-width: 760px) { body { padding: 16px; } main { margin: 16px auto; grid-template-columns: 1fr; } section { padding: 20px; } }
     </style>
 </head>
 <body>
 <main>
-    <h1>Wiadomość</h1>
-    <form method="post" th:action="@{/messages}" th:object="${messageRequest}">
-        <label for="message">Treść wiadomości</label>
-        <input type="text" th:field="*{message}" autocomplete="off">
-        <button type="submit">Wyślij</button>
-    </form>
+    <section aria-labelledby="message-heading">
+        <h1 id="message-heading">Wiadomość</h1>
+        <form method="post" th:action="@{/messages}" th:object="${messageRequest}">
+            <label for="type">Typ wiadomości</label>
+            <select th:field="*{type}" required>
+                <option th:each="type : ${messageTypes}" th:value="${type}"
+                        th:disabled="${!supportedTypes.contains(type)}"
+                        th:text="${type.name() + (supportedTypes.contains(type) ? '' : ' — niedostępny')}"></option>
+            </select>
+            <label for="message">Treść wiadomości</label>
+            <input type="text" th:field="*{message}" autocomplete="off" required>
+            <button type="submit" th:disabled="${supportedTypes.isEmpty()}">Wyślij</button>
+        </form>
+        <p class="hint">Typy bez zaimplementowanej obsługi są niedostępne.</p>
+    </section>
+    <section aria-labelledby="cron-heading">
+        <div class="heading">
+            <h2 id="cron-heading">Zadania cron <span th:text="${'(' + crons.size() + ')'}"></span></h2>
+            <a class="refresh" th:href="@{/}">Odśwież</a>
+        </div>
+        <p class="hint">Najnowsze zadania na górze. Statusy pochodzą z bazy danych.</p>
+        <p class="empty" th:if="${crons.isEmpty()}">Brak zadań cron. Po wysłaniu wiadomości pojawią się tutaj utworzone zadania.</p>
+        <ul class="tasks" th:unless="${crons.isEmpty()}">
+            <li class="task" th:each="cron : ${crons}">
+                <header>
+                    <strong th:text="${'#' + cron.id + ' · ' + cron.cronType}"></strong>
+                    <span class="status" th:classappend="${cron.status}" th:switch="${cron.status?.name()}">
+                        <span th:case="'QUEUED'">W kolejce</span>
+                        <span th:case="'SENT'">Wysłano</span>
+                        <span th:case="'ERROR'">Błąd</span>
+                        <span th:case="*">Brak statusu</span>
+                    </span>
+                </header>
+                <p class="recipient">Do: <span th:text="${cron.emailAddress}"></span></p>
+                <p class="content" th:text="${cron.content}"></p>
+            </li>
+        </ul>
+    </section>
 </main>
 </body>
 </html>

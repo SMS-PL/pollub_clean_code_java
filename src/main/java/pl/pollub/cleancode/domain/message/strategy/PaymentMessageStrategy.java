@@ -2,7 +2,6 @@ package pl.pollub.cleancode.domain.message.strategy;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.pollub.cleancode.domain.inquiry.InquiryEntity;
 import pl.pollub.cleancode.domain.inquiry.InquiryFacade;
 import pl.pollub.cleancode.domain.message.dto.MessageRequestDto;
 import pl.pollub.cleancode.domain.message.enums.MessageType;

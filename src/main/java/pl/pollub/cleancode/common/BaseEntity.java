@@ -1,17 +1,24 @@
 package pl.pollub.cleancode.common;
 
 import jakarta.persistence.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 
+@Getter
+@Setter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 }
