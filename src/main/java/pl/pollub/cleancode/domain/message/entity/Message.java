@@ -8,7 +8,6 @@ import pl.pollub.cleancode.domain.message.enums.MessageType;
 @Table(name = "messages")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
@@ -22,4 +21,31 @@ public class Message {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    //[Builder]
+    public static class Builder {
+        private String message;
+        private MessageType messageType;
+
+        private Builder() {
+        }
+
+        public Builder message(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder messageType(MessageType messageType) {
+            this.messageType = messageType;
+            return this;
+        }
+
+        public Message build() {
+            return new Message(null, message, messageType);
+        }
+    }
 }

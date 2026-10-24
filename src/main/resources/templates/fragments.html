@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle}">Strona</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #f5f6f8; color: #202630; }
+        nav { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 8px; }
+        nav a { padding: 8px 14px; border-radius: 6px; color: #2458ce; text-decoration: none; background: #edf2ff; }
+        nav a.active { background: #2458ce; color: white; }
+        main { max-width: 1200px; margin: 24px auto; display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; align-items: start; }
+        main.single { grid-template-columns: minmax(0, 1fr); }
+        section { min-width: 0; padding: 28px; background: white; border-radius: 12px; }
+        h1, h2 { margin: 0 0 24px; font-size: 24px; }
+        h3 { margin: 0 0 8px; font-size: 18px; }
+        label { display: block; margin: 20px 0 8px; }
+        input, select { width: 100%; padding: 12px; font: inherit; border: 1px solid #a8b0bb; border-radius: 6px; background: white; }
+        button, .refresh { display: inline-block; padding: 12px 24px; font: inherit; border: 0; border-radius: 6px; background: #2458ce; color: white; cursor: pointer; text-decoration: none; }
+        button { margin-top: 20px; }
+        button.small { margin-top: 0; padding: 6px 12px; font-size: 14px; }
+        button.secondary { background: #edf2ff; color: #2458ce; }
+        button:disabled { opacity: .5; cursor: not-allowed; }
+        :focus-visible { outline: 3px solid #89b4ff; outline-offset: 2px; }
+        .heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+        .heading h2 { margin: 0; }
+        .heading form button { margin-top: 0; }
+        .refresh { padding: 8px 12px; background: #edf2ff; color: #2458ce; }
+        .hint, .empty { color: #606b7a; line-height: 1.6; }
+        .hint { font-size: 14px; }
+        .flash { max-width: 1200px; margin: 16px auto 0; padding: 12px 16px; border-radius: 8px; }
+        .flash.error { background: #ffe3e3; color: #9a2626; }
+        .flash.success { background: #def5e5; color: #216738; }
+        .tasks { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+        .task { border: 1px solid #dce1e8; border-radius: 8px; padding: 16px; overflow-wrap: anywhere; }
+        .task header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+        .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .status { padding: 4px 10px; border-radius: 20px; font-size: 13px; background: #fff3cf; color: #725300; }
+        .status.SENT, .status.RESOLVED { background: #def5e5; color: #216738; }
+        .status.ERROR, .status.HIGH { background: #ffe3e3; color: #9a2626; }
+        .status.CLOSED, .status.LOW { background: #e8eaee; color: #4a5260; }
+        .status.IN_PROGRESS { background: #e2ecff; color: #2458ce; }
+        .recipient { color: #606b7a; font-size: 14px; }
+        .content { margin-bottom: 0; white-space: pre-wrap; }
+        pre { margin: 8px 0 0; padding: 12px; background: #f5f6f8; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #dce1e8; vertical-align: top; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .where { color: #606b7a; font-size: 13px; font-family: ui-monospace, monospace; }
+        @media (max-width: 760px) { body { padding: 16px; } main { margin: 16px auto; grid-template-columns: 1fr; } section { padding: 20px; } }
+    </style>
+</head>
+<body>
+<nav th:fragment="nav(active)">
+    <a th:href="@{/}" th:classappend="${active == 'messages'} ? 'active'">Wiadomości i cron</a>
+    <a th:href="@{/tickets}" th:classappend="${active == 'tickets'} ? 'active'">Zgłoszenia</a>
+    <a th:href="@{/history}" th:classappend="${active == 'history'} ? 'active'">Historia i statystyki</a>
+</nav>
+<div th:fragment="flash">
+    <p class="flash error" th:if="${error}" th:text="${error}"></p>
+    <p class="flash success" th:if="${success}" th:text="${success}"></p>
+</div>
+</body>
+</html>

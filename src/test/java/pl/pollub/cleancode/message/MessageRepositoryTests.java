@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pollub.cleancode.domain.message.entity.Message;
+import pl.pollub.cleancode.domain.message.enums.MessageType;
 import pl.pollub.cleancode.domain.message.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +22,7 @@ class MessageRepositoryTests {
     void savesAndReadsMessageFromDatabase() {
         Message message = new Message();
         message.setMessage("Wiadomość testowa");
+        message.setMessageType(MessageType.PAYMENT);
         Message saved = repository.saveAndFlush(message);
         Long id = saved.getId();
         entityManager.clear();

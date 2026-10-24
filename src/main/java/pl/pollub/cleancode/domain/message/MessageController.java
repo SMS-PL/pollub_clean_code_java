@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.pollub.cleancode.common.DomainException;
 import pl.pollub.cleancode.domain.message.dto.MessageRequestDto;
 import pl.pollub.cleancode.domain.message.enums.MessageType;
 import pl.pollub.cleancode.infrastructure.cron.CronRepository;
@@ -33,8 +35,13 @@ public class MessageController {
     }
 
     @PostMapping("/messages")
-    public String send(@ModelAttribute MessageRequestDto request) {
-        messageService.saveMessage(request);
+    public String send(@ModelAttribute MessageRequestDto request, RedirectAttributes redirectAttributes) {
+        try {
+            messageService.saveMessage(request);
+            redirectAttributes.addFlashAttribute("success", "Wiadomość zapisana, utworzono zgłoszenie i zadanie cron.");
+        } catch (DomainException exception) {
+            redirectAttributes.addFlashAttribute("error", exception.getMessage());
+        }
         return "redirect:/";
     }
 }

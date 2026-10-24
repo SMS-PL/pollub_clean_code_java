@@ -1,6 +1,7 @@
 package pl.pollub.cleancode.domain.ticket;
 
-public enum PriorityEnum {
+//[Naming]
+public enum TicketPriority {
     LOW,
     MEDIUM,
     HIGH

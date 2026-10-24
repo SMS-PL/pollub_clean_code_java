@@ -1,24 +1,32 @@
 package pl.pollub.cleancode.domain.message.strategy;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.pollub.cleancode.domain.email.EmailAddressConstants;
+import pl.pollub.cleancode.domain.email.EmailContentConstants;
 import pl.pollub.cleancode.domain.inquiry.InquiryFacade;
 import pl.pollub.cleancode.domain.message.dto.MessageRequestDto;
 import pl.pollub.cleancode.domain.message.enums.MessageType;
-import pl.pollub.cleancode.domain.message.mapper.MessageMapper;
+import pl.pollub.cleancode.domain.message.observer.MessageEventPublisher;
 import pl.pollub.cleancode.domain.message.repository.MessageRepository;
 
+//[Strategy] //[DIP]
 @Component
-@RequiredArgsConstructor
-public class PaymentMessageStrategy implements MessageStrategy{
-    private final MessageRepository messageRepository;
+public class PaymentMessageStrategy extends AbstractMessageStrategy {
     private final InquiryFacade inquiryFacade;
 
+    public PaymentMessageStrategy(MessageRepository messageRepository,
+                                  MessageEventPublisher messageEventPublisher,
+                                  InquiryFacade inquiryFacade) {
+        super(messageRepository, messageEventPublisher);
+        this.inquiryFacade = inquiryFacade;
+    }
 
     @Override
-    public void saveMessage(MessageRequestDto messageRequestDto) {
-        inquiryFacade.createInquryForPaymentDepartment(messageRequestDto);
-        messageRepository.save(MessageMapper.mapToEntity(messageRequestDto));
+    protected void createInquiry(MessageRequestDto messageRequestDto) {
+        //[Facade]
+        inquiryFacade.createInquiry(messageRequestDto,
+                EmailAddressConstants.PAYMENT_DEPARTMENT,
+                EmailContentConstants.PAYMENT_ISSUE_CONTENT);
     }
 
     @Override

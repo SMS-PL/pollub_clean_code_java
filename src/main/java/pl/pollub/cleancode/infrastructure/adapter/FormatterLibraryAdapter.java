@@ -1,29 +1,34 @@
 package pl.pollub.cleancode.infrastructure.adapter;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.pollub.cleancode.library.FormatterLibrary;
 
+//[Adapter] //[DIP]
 @Component
-@RequiredArgsConstructor
-public class FormatterLibraryAdapter implements TextFormatter {
+public class FormatterLibraryAdapter extends AbstractTextFormatter {
+    //[MagicNumber]
+    private static final char FINAL_PUNCTUATION = '.';
+    private static final String LINE_SEPARATOR = "\n";
+    private static final String NO_INDENT = "";
+    private static final int UNLIMITED_LINES = 0;
 
     private final FormatterLibrary library = new FormatterLibrary();
 
     @Override
-    public String format(String text, int maxLineLength, String signature) {
+    protected String formatText(String text, int maxLineLength, String signature) {
         String[] words = text.trim().split("\\s+");   // String -> String[]
+        //[Adapter]
         return library.formatWords(
                 words,
                 maxLineLength,
                 true,      // capitalizeSentences
                 true,      // addFinalPunctuation
-                '.',       // finalPunctuation
-                "\n",      // lineSeparator
-                "",        // indent
+                FINAL_PUNCTUATION,
+                LINE_SEPARATOR,
+                NO_INDENT,
                 true,      // trimWords
                 true,      // skipBlankWords
-                0,         // maxLines (bez limitu)
+                UNLIMITED_LINES,
                 null,      // greeting
                 signature
         );

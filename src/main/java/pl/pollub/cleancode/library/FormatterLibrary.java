@@ -26,6 +26,7 @@ import java.util.List;
  * Wzorzec: ADAPTER (Structural). Adaptee = ta klasa, Target = TextFormatter,
  * Adapter = FormatterLibraryAdapter.
  */
+//[Adapter]
 public class FormatterLibrary {
 
     /**
@@ -42,6 +43,7 @@ public class FormatterLibrary {
      * @param greeting            powitanie przed trescia (null = brak)
      * @param signature           podpis po tresci (null = brak)
      */
+    //[MethodLength]
     public String formatWords(String[] words,
                               int maxLineLength,
                               boolean capitalizeSentences,
@@ -54,8 +56,17 @@ public class FormatterLibrary {
                               int maxLines,
                               String greeting,
                               String signature) {
+        // publiczne API "biblioteki" bez zmian, w środku metoda podzielona na kroki (max 20 linii)
+        List<String> cleaned = cleanWords(words, capitalizeSentences, trimWords, skipBlankWords);
+        if (addFinalPunctuation) {
+            appendFinalPunctuation(cleaned, finalPunctuation);
+        }
+        List<String> lines = breakLines(cleaned, maxLineLength - indent.length(), maxLines);
+        return joinParts(lines, lineSeparator, indent, greeting, signature);
+    }
 
-        // 1. czyszczenie slow + wielkie litery po kropce
+    // 1. czyszczenie slow + wielkie litery po kropce
+    private List<String> cleanWords(String[] words, boolean capitalizeSentences, boolean trimWords, boolean skipBlankWords) {
         List<String> cleaned = new ArrayList<>();
         boolean capitalizeNext = true;
         for (String raw : words) {
@@ -72,17 +83,22 @@ public class FormatterLibrary {
             capitalizeNext = endsSentence(word);
             cleaned.add(word);
         }
+        return cleaned;
+    }
 
-        // 2. znak konca zdania na koncu tekstu
-        if (addFinalPunctuation && !cleaned.isEmpty()) {
-            int last = cleaned.size() - 1;
-            if (!endsSentence(cleaned.get(last))) {
-                cleaned.set(last, cleaned.get(last) + finalPunctuation);
-            }
+    // 2. znak konca zdania na koncu tekstu
+    private void appendFinalPunctuation(List<String> cleaned, char finalPunctuation) {
+        if (cleaned.isEmpty()) {
+            return;
         }
+        int last = cleaned.size() - 1;
+        if (!endsSentence(cleaned.get(last))) {
+            cleaned.set(last, cleaned.get(last) + finalPunctuation);
+        }
+    }
 
-        // 3. lamanie linii
-        int width = maxLineLength - indent.length();
+    // 3. lamanie linii
+    private List<String> breakLines(List<String> cleaned, int width, int maxLines) {
         List<String> lines = new ArrayList<>();
         StringBuilder line = new StringBuilder();
         for (String word : cleaned) {
@@ -90,20 +106,19 @@ public class FormatterLibrary {
                 lines.add(line.toString());
                 line = new StringBuilder();
                 if (maxLines > 0 && lines.size() == maxLines) {
-                    line = null;
-                    break;
+                    return lines;
                 }
             }
-            if (!line.isEmpty()) {
-                line.append(' ');
-            }
-            line.append(word);
+            line.append(line.isEmpty() ? "" : " ").append(word);
         }
-        if (line != null && !line.isEmpty()) {
+        if (!line.isEmpty()) {
             lines.add(line.toString());
         }
+        return lines;
+    }
 
-        // 4. skladanie calosci
+    // 4. skladanie calosci
+    private String joinParts(List<String> lines, String lineSeparator, String indent, String greeting, String signature) {
         StringBuilder result = new StringBuilder();
         if (greeting != null) {
             result.append(greeting).append(lineSeparator).append(lineSeparator);

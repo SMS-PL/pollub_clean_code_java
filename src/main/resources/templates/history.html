@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Historia i statystyki')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('history')}"></nav>
+<main class="single">
+    <section aria-labelledby="stats-heading">
+        <h1 id="stats-heading">Statystyki</h1>
+        <div class="stats">
+            <div>
+                <h3>Observer: zapisane od startu</h3>
+                <p class="empty" th:if="${savedMessagesByType.isEmpty()}">Brak wiadomości od uruchomienia.</p>
+                <p th:each="item : ${savedMessagesByType}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+            <div>
+                <h3>Wiadomości wg typu</h3>
+                <p th:each="item : ${messagesByType}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+            <div>
+                <h3>Zadania cron wg statusu</h3>
+                <p th:each="item : ${cronTasksByStatus}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+            <div>
+                <h3>Zgłoszenia wg priorytetu</h3>
+                <p th:each="item : ${ticketsByPriority}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+            <div>
+                <h3>Zgłoszenia wg stanu</h3>
+                <p th:each="item : ${ticketsByState}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+            <div>
+                <h3>Najczęstsze wywołania</h3>
+                <p th:each="item : ${mostVisitedPaths}" th:text="${item.key + ': ' + item.value}"></p>
+            </div>
+        </div>
+        <p class="hint">Liczone strumieniami w StatisticsService. Pierwszy blok pochodzi z obserwatora MessageStatisticsObserver.</p>
+    </section>
+    <section aria-labelledby="history-heading">
+        <div class="heading">
+            <h2 id="history-heading">Historia wywołań <span th:text="${'(' + historySize + ')'}"></span></h2>
+            <form method="post" th:action="@{/history/clear}">
+                <button type="submit" class="small secondary">Wyczyść</button>
+            </form>
+        </div>
+        <p class="hint">Singleton RequestHistory, wypełniany przez interceptor. Lista przechodzona własnym iteratorem (od najnowszego).</p>
+        <table>
+            <thead><tr><th>Czas</th><th>Metoda</th><th>Ścieżka</th><th>Parametry</th></tr></thead>
+            <tbody>
+            <tr th:each="entry : ${history}">
+                <td th:text="${#temporals.format(entry.calledAt(), 'HH:mm:ss')}"></td>
+                <td th:text="${entry.httpMethod()}"></td>
+                <td th:text="${entry.path()}"></td>
+                <td th:text="${entry.details()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "clean-code-api",
+      "runtimeExecutable": "./mvnw",
+      "runtimeArgs": ["spring-boot:run"],
+      "port": 8080
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Zgłoszenia')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('tickets')}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+<main class="single">
+    <section aria-labelledby="tickets-heading">
+        <div class="heading">
+            <h1 id="tickets-heading">Zgłoszenia <span th:text="${'(' + tickets.size() + ')'}"></span></h1>
+        </div>
+        <p class="hint">Wzorzec State: Nowe → W realizacji → Rozwiązane → Zamknięte. „Otwórz ponownie” działa tylko dla rozwiązanych i zamkniętych — w innych stanach pojawi się komunikat wyjątku.</p>
+        <p class="empty" th:if="${tickets.isEmpty()}">Brak zgłoszeń. Wyślij wiadomość na stronie głównej.</p>
+        <ul class="tasks" th:unless="${tickets.isEmpty()}">
+            <li class="task" th:each="ticket : ${tickets}">
+                <header>
+                    <strong th:text="${'#' + ticket.id + ' · ' + (ticket.ticketNumber ?: 'bez numeru') + ' · ' + (ticket.title ?: 'Zgłoszenie')}"></strong>
+                    <div class="actions">
+                        <span class="status" th:classappend="${ticket.priority}" th:text="${'Priorytet: ' + ticket.priority}"></span>
+                        <span class="status" th:classappend="${ticket.state.status}" th:text="${ticket.state.label}"></span>
+                    </div>
+                </header>
+                <p class="content" th:text="${ticket.content}"></p>
+                <div class="actions">
+                    <form method="post" th:action="@{/tickets/{id}/next(id=${ticket.id})}"><button type="submit" class="small">Dalej</button></form>
+                    <form method="post" th:action="@{/tickets/{id}/close(id=${ticket.id})}"><button type="submit" class="small secondary">Zamknij</button></form>
+                    <form method="post" th:action="@{/tickets/{id}/reopen(id=${ticket.id})}"><button type="submit" class="small secondary">Otwórz ponownie</button></form>
+                </div>
+            </li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>
